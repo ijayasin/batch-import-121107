@@ -147,15 +147,20 @@ public class Importer {
         }
 
         private int split(String line) {
-            final StringTokenizer st = new StringTokenizer(line, delim,true);
+            // final StringTokenizer st = new StringTokenizer(line, delim,true);
+            final String[] tokens = line.split(delim, fields.length);
             int count=0;
             for (int i = 0; i < lineSize; i++) {
-                String value = st.nextToken();
+                //String value = st.nextToken();
+                String value = tokens[i];
                 if (value.equals(delim)) {
                     lineData[i] = null;
+                } else if (value.equals("NULL")) {
+                    lineData[i] = null;
+                    //if (i< lineSize -1) st.nextToken();
                 } else {
                     lineData[i] = value.trim().isEmpty() ? null : value;
-                    if (i< lineSize -1) st.nextToken();
+                    //if (i< lineSize -1) st.nextToken();
                 }
                 if (i >= offset && lineData[i]!=null) {
                     data[count++]=fields[i];
@@ -221,7 +226,7 @@ public class Importer {
 
     void importNodes(Reader reader) throws IOException {
         BufferedReader bf = new BufferedReader(reader);
-        final Data data = new Data(bf.readLine(), "\t", 0);
+        final Data data = new Data(bf.readLine(), "\\t", 0);
         String line;
         report.reset();
         while ((line = bf.readLine()) != null) {
